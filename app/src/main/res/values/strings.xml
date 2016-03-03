@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Point</string>
+    <string name="title_activity_posts">PostsActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_abstract_location">AbstractLocationActivity</string>
+    <string name="title_activity_add_post">AddPostActivity</string>
+    <string name="title_activity_comment">CommentActivity</string>
+    <string name="title_activity_add_comment">AddCommentActivity</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="add_post_title">New post</string>
+</resources>

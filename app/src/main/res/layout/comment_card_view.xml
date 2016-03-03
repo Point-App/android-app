@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:padding="2dp"
+    >
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/cv"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/distanceTV"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:textSize="12sp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/iconTV"
+                android:padding="10dp"
+                android:textColor="@color/white_text"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:textSize="20sp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/createdAtTV"
+                android:layout_marginLeft="16dp"
+
+                android:layout_toRightOf="@id/iconTV"
+
+                android:layout_alignParentBottom="true"
+                android:textSize="12sp"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/ic_favorite_border_black_24dp"
+                android:id="@+id/likesIV"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/postTV"
+                android:layout_toRightOf="@id/iconTV"
+                android:layout_marginLeft="16dp"
+                android:layout_alignParentTop="true"
+                android:textSize="16sp"
+                android:layout_toLeftOf="@id/likesIV"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/likesTV"
+                android:layout_marginLeft="16dp"
+                android:layout_below="@id/postTV"
+                android:layout_toRightOf="@id/createdAtTV"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:textSize="12sp"
+                />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

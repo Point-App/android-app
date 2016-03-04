@@ -151,7 +151,7 @@ public class AbstractLocationActivity extends ActionBarActivity implements
         }
         else
         {
-            Log.d(TAG,"Last known location is null");
+            Log.d(TAG, "Last known location is null");
         }
 
     }
@@ -159,11 +159,15 @@ public class AbstractLocationActivity extends ActionBarActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        stopLocationUpdates();
-        if(locationDialog.isShowing())
+        if(this.isGooglePlayServicesAvailable())
         {
-            locationDialog.dismiss();
+            stopLocationUpdates();
+            if(locationDialog.isShowing())
+            {
+                locationDialog.dismiss();
+            }
         }
+
     }
 
     protected void stopLocationUpdates() {

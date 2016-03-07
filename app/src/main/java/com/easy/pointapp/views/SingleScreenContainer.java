@@ -49,13 +49,19 @@ public class SingleScreenContainer extends FrameLayout implements Container {
 
             if(screenID==ADD_COMMENT_SCREEN)
             {
-                AddCommentView postsView = (AddCommentView) getChildAt(0);
-                removeViewAt(0);
-                showComments(postsView.post);
+                if(this.getChildCount()>0)
+                {
+                    AddCommentView postsView = (AddCommentView) getChildAt(0);
+                    removeViewAt(0);
+                    showComments(postsView.post);
+                }
             }
             else
             {
-                removeViewAt(0);
+                if(this.getChildCount()>0)
+                {
+                    removeViewAt(0);
+                }
                 showPosts();
             }
             return true;

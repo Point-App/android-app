@@ -4,13 +4,12 @@ import com.easy.pointapp.R;
 import com.easy.pointapp.model.api.v1.Comment;
 import com.easy.pointapp.model.api.v1.CommentsLoader;
 import com.easy.pointapp.model.api.v1.Post;
+import com.easy.pointapp.model.api.v1.PostsLoader;
 import com.easy.pointapp.vcs.CommentAdapter;
 import com.easy.pointapp.vcs.IAsyncVC;
 import com.easy.pointapp.vcs.RecyclerItemClickListener;
 import com.easy.pointapp.vcs.tasks.AddCommentTask;
 import com.easy.pointapp.vcs.tasks.LikeCommentTask;
-import com.easy.pointapp.vcs.tasks.LikePostTask;
-import com.easy.pointapp.vcs.tasks.LoadPostTask;
 
 import android.app.Activity;
 import android.content.Context;
@@ -37,8 +36,7 @@ import rx.schedulers.Schedulers;
  * Created by mini1 on 10.08.15.
  */
 public class CommentsView extends RelativeLayout
-        implements LikeCommentTask.LikeCommentClient, AddCommentTask.AddCommentClient,
-        LoadPostTask.LoadPostClient, LikePostTask.LikePostClient {
+        implements LikeCommentTask.LikeCommentClient, AddCommentTask.AddCommentClient {
 
     private Post mPost;
 
@@ -125,9 +123,19 @@ public class CommentsView extends RelativeLayout
 
     private void likePost() {
         if (mPost != null) {
-            LikePostTask task = new LikePostTask(mPost.getID(), (Activity) getContext(), this,
-                    (IAsyncVC) getContext());
-            task.execute();
+            PostsLoader.like(getContext(), mPost.getID()).subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
+                @Override
+                public void call(Void aVoid) {
+                    postLiked(true);
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    throwable.printStackTrace();
+                    postLiked(false);
+                }
+            });
         }
     }
 
@@ -171,9 +179,18 @@ public class CommentsView extends RelativeLayout
 
     private void refreshPost() {
         if (mPost != null) {
-            LoadPostTask task = new LoadPostTask(((Activity) getContext()), this,
-                    (IAsyncVC) getContext(), mPost);
-            task.execute();
+            PostsLoader.loadSingle(getContext(), mPost.getID()).subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Post>() {
+                @Override
+                public void call(Post post) {
+                    loadedPost(post);
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+            });
         }
     }
 

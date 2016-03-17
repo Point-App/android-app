@@ -87,15 +87,27 @@ public interface PointRestService {
     }
 
     @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+    @POST("post")
+    Observable<Void> sendPost(@Body Request request);
+
+    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+    @POST("like")
+    Observable<Void> likePost(@Body Request request);
+
+    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+    @POST("single")
+    Observable<Post> loadPost(@Body Request request);
+
+    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
     @POST("show")
-    Observable<List<Post>> getPosts(@Body Request request);
+    Observable<List<Post>> loadPosts(@Body Request request);
 
     @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
     @POST("show2")
-    Observable<List<Post>> getFavouritePosts(@Body Request request);
+    Observable<List<Post>> loadFavouritePosts(@Body Request request);
 
     @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
     @POST("details")
-    Observable<List<Comment>> getComments(@Body Request request);
+    Observable<List<Comment>> loadComments(@Body Request request);
 
 }

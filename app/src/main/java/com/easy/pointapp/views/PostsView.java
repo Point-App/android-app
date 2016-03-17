@@ -3,13 +3,10 @@ package com.easy.pointapp.views;
 import com.easy.pointapp.R;
 import com.easy.pointapp.model.api.v1.Post;
 import com.easy.pointapp.model.api.v1.PostsLoader;
-import com.easy.pointapp.vcs.IAsyncVC;
 import com.easy.pointapp.vcs.PostsActivity;
 import com.easy.pointapp.vcs.RVAdapter;
 import com.easy.pointapp.vcs.RecyclerItemClickListener;
-import com.easy.pointapp.vcs.tasks.LikePostTask;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,7 +28,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by mini1 on 09.08.15.
  */
-public class PostsView extends RelativeLayout implements LikePostTask.LikePostClient {
+public class PostsView extends RelativeLayout {
 
     List<Post> posts;
 
@@ -112,9 +109,19 @@ public class PostsView extends RelativeLayout implements LikePostTask.LikePostCl
     }
 
     private void likePost(String postID) {
-        LikePostTask task = new LikePostTask(postID, ((Activity) getContext()), this,
-                (IAsyncVC) getContext());
-        task.execute();
+        PostsLoader.like(getContext(), postID).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                postLiked(true);
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                throwable.printStackTrace();
+                postLiked(false);
+            }
+        });
     }
 
     public RVAdapter getAdapter() {

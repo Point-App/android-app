@@ -36,7 +36,7 @@ public class CommentsLoader extends RestClient {
         String json = gson.toJson(request);
         try {
 
-            Reader jsonResponse = this.post(Routes.LIKE, json);
+            Reader jsonResponse = this.post("like", json);
 //            Log.d("posts", jsonResponse);
             return true;
         } catch (Exception e) {
@@ -46,7 +46,7 @@ public class CommentsLoader extends RestClient {
     }
 
     public static Observable<List<Comment>> loadComments(Context context, String postID) {
-        return RestClient.getService().getComments(
+        return RestClient.getService().loadComments(
                 new PointRestService.Request.Builder().setUserID(AuthManager.getAuthToken(context))
                         .addValue("post", postID).build());
     }

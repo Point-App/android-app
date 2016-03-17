@@ -1,24 +1,25 @@
 package com.easy.pointapp.views;
 
 import com.easy.pointapp.R;
+import com.easy.pointapp.model.api.v1.CommentsLoader;
 import com.easy.pointapp.model.api.v1.Post;
-import com.easy.pointapp.vcs.IAsyncVC;
-import com.easy.pointapp.vcs.tasks.AddCommentTask;
 
-import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by mini1 on 10.08.15.
  */
-public class AddCommentView extends RelativeLayout implements AddCommentTask.AddCommentClient {
-
-    String postText;
+public class AddCommentView extends RelativeLayout {
 
     public Post post;
 
@@ -33,13 +34,23 @@ public class AddCommentView extends RelativeLayout implements AddCommentTask.Add
 
     public void sendComment() {
         EditText postEdit = (EditText) findViewById(R.id.editPost);
-        this.postText = postEdit.getText().toString();
-        if (this.postText.length() == 0) {
+        if (TextUtils.isEmpty(postEdit.getText())) {
             Toast.makeText(getContext(), "Too short", Toast.LENGTH_SHORT).show();
         } else {
-            AddCommentTask addCommentTask = new AddCommentTask(post.getID(), postText,
-                    (Activity) getContext(), this, (IAsyncVC) getContext());
-            addCommentTask.execute();
+            CommentsLoader.createComment(getContext(), post.getID(), postEdit.getText().toString())
+                    .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            commentAdded(true);
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            throwable.printStackTrace();
+                            commentAdded(false);
+                        }
+                    });
         }
     }
 

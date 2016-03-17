@@ -16,7 +16,7 @@ import rx.Observable;
 public class PostsLoader extends RestClient {
 
     public static Observable<Void> like(Context context, String postID) {
-        return RestClient.getService().likePost(
+        return RestClient.getService().sendLike(
                 new PointRestService.Request.Builder().setUserID(AuthManager.getAuthToken(context))
                         .addValue("type", "post").addValue("target", postID).build());
     }

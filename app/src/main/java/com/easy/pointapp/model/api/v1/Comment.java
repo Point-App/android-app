@@ -10,28 +10,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Comment {
 
     @JsonProperty("text")
-    public String mText;
+    private String mText;
 
     @JsonProperty("user")
-    public String mUser;
+    private String mUser;
 
     @JsonProperty("post")
-    public String mPost;
+    private String mPost;
 
     @JsonProperty("_id")
-    public String mID;
+    private String mID;
 
     @JsonProperty("like")
-    public Integer mLikeNumber;
+    private Integer mLikeNumber;
 
     @JsonProperty("icon")
-    public String mIcon;
+    private String mIcon;
 
     @JsonProperty("icon_color")
-    public String mIconColor;
+    private String mIconColor;
 
     @JsonProperty("created")
-    public String mCreatedDate;
+    private String mCreatedDate;
 
     public String getText() {
         return mText;

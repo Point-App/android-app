@@ -6,17 +6,14 @@ import com.easy.pointapp.model.api.v1.CommentsLoader;
 import com.easy.pointapp.model.api.v1.Post;
 import com.easy.pointapp.model.api.v1.PostsLoader;
 import com.easy.pointapp.vcs.CommentAdapter;
-import com.easy.pointapp.vcs.IAsyncVC;
 import com.easy.pointapp.vcs.RecyclerItemClickListener;
-import com.easy.pointapp.vcs.tasks.AddCommentTask;
-import com.easy.pointapp.vcs.tasks.LikeCommentTask;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -35,8 +32,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by mini1 on 10.08.15.
  */
-public class CommentsView extends RelativeLayout
-        implements LikeCommentTask.LikeCommentClient, AddCommentTask.AddCommentClient {
+public class CommentsView extends RelativeLayout {
 
     private Post mPost;
 
@@ -45,8 +41,6 @@ public class CommentsView extends RelativeLayout
     private CommentAdapter mCommentAdapter;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    private String mCommentText;
 
     private ImageButton mBtnAdd;
 
@@ -142,13 +136,24 @@ public class CommentsView extends RelativeLayout
     public void sendComment() {
         if (mPost != null) {
             EditText postEdit = (EditText) findViewById(R.id.editComment);
-            this.mCommentText = postEdit.getText().toString();
-            if (this.mCommentText.length() == 0) {
+            if (TextUtils.isEmpty(postEdit.getText())) {
                 Toast.makeText(getContext(), "Too short", Toast.LENGTH_SHORT).show();
             } else {
-                AddCommentTask addCommentTask = new AddCommentTask(mPost.getID(), mCommentText,
-                        (Activity) getContext(), this, (IAsyncVC) getContext());
-                addCommentTask.execute();
+                CommentsLoader
+                        .createComment(getContext(), mPost.getID(), postEdit.getText().toString())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        commentAdded(true);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        commentAdded(false);
+                    }
+                });
             }
         }
     }
@@ -169,7 +174,6 @@ public class CommentsView extends RelativeLayout
             if (result) {
                 loadComments();
                 myEditText.setText("");
-                this.mCommentText = "";
             } else {
                 Toast.makeText(getContext(), "Error occured(", Toast.LENGTH_LONG).show();
             }
@@ -202,10 +206,18 @@ public class CommentsView extends RelativeLayout
 
     private void likeComment(Comment comment) {
         if (mPost != null) {
-            LikeCommentTask task = new LikeCommentTask(comment, ((Activity) getContext()), this,
-                    (IAsyncVC) getContext());
-            task.execute();
-            refreshPost();
+            CommentsLoader.like(getContext(), comment.getID()).subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
+                @Override
+                public void call(Void aVoid) {
+                    loadComments();
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+            });
         }
     }
 

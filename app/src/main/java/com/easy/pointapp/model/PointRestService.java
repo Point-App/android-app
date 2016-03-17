@@ -93,7 +93,7 @@ public interface PointRestService {
 
     @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
     @POST("like")
-    Observable<Void> likePost(@Body Request request);
+    Observable<Void> sendLike(@Body Request request);
 
     @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
     @POST("single")
@@ -114,5 +114,9 @@ public interface PointRestService {
     @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
     @POST("hello")
     Observable<AuthenticationHolder> register(@Body Request request);
+
+    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+    @POST("comment")
+    Observable<Void> sendComment(@Body Request request);
 
 }

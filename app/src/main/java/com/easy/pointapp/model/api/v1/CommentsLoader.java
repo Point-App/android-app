@@ -1,7 +1,7 @@
 package com.easy.pointapp.model.api.v1;
 
 import com.easy.pointapp.model.AuthManager;
-import com.easy.pointapp.model.PointRestService;
+import com.easy.pointapp.model.RestClient;
 
 import android.content.Context;
 
@@ -16,19 +16,19 @@ public class CommentsLoader extends RestClient {
 
     public static Observable<Void> like(Context context, String commentID) {
         return RestClient.getService().sendLike(
-                new PointRestService.Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
                         .addValue("type", "comment").addValue("target", commentID).build());
     }
 
     public static Observable<List<Comment>> loadComments(Context context, String postID) {
         return RestClient.getService().loadComments(
-                new PointRestService.Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
                         .addValue("post", postID).build());
     }
 
     public static Observable<Void> createComment(Context context, String postID, String comment) {
         return RestClient.getService().sendComment(
-                new PointRestService.Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
                         .addValue("post", postID).addValue("text", comment).build());
     }
 }

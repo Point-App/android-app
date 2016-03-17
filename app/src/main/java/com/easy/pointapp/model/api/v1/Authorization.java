@@ -1,7 +1,7 @@
 package com.easy.pointapp.model.api.v1;
 
 import com.easy.pointapp.model.AuthManager;
-import com.easy.pointapp.model.PointRestService;
+import com.easy.pointapp.model.RestClient;
 
 import android.content.Context;
 import android.location.Location;
@@ -15,7 +15,7 @@ public class Authorization extends RestClient {
 
     public static Observable<AuthenticationHolder> makeAuth(Context context, Location location) {
         return RestClient.getService().register(
-                new PointRestService.Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
                         .setLocation(location).build());
     }
 }

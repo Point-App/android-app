@@ -1,5 +1,6 @@
 package com.easy.pointapp.model;
 
+import com.easy.pointapp.BuildConfig;
 import com.easy.pointapp.model.api.v1.AuthenticationHolder;
 import com.easy.pointapp.model.api.v1.Comment;
 import com.easy.pointapp.model.api.v1.Post;
@@ -10,17 +11,21 @@ import android.location.Location;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import rx.Observable;
 
 /**
- * Created by nixan on 17.03.16.
+ * Created by Igor on 30.06.2015.
  */
-public interface PointRestService {
+public class RestClient {
 
-    public class Request extends HashMap<String, Object> {
+    public static class Request extends HashMap<String, Object> {
 
         private Request() {
             // Private constructor
@@ -87,40 +92,61 @@ public interface PointRestService {
         }
     }
 
-    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
-    @POST("post")
-    Observable<Void> sendPost(@Body Request request);
+    public interface PointRestService {
 
-    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
-    @POST("like")
-    Observable<Void> sendLike(@Body Request request);
+        @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+        @POST("post")
+        Observable<Void> sendPost(@Body Request request);
 
-    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
-    @POST("single")
-    Observable<Post> loadPost(@Body Request request);
+        @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+        @POST("like")
+        Observable<Void> sendLike(@Body Request request);
 
-    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
-    @POST("show")
-    Observable<List<Post>> loadPosts(@Body Request request);
+        @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+        @POST("single")
+        Observable<Post> loadPost(@Body Request request);
 
-    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
-    @POST("show2")
-    Observable<List<Post>> loadFavouritePosts(@Body Request request);
+        @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+        @POST("show")
+        Observable<List<Post>> loadPosts(@Body Request request);
 
-    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
-    @POST("details")
-    Observable<List<Comment>> loadComments(@Body Request request);
+        @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+        @POST("show2")
+        Observable<List<Post>> loadFavouritePosts(@Body Request request);
 
-    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
-    @POST("hello")
-    Observable<AuthenticationHolder> register(@Body Request request);
+        @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+        @POST("details")
+        Observable<List<Comment>> loadComments(@Body Request request);
 
-    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
-    @POST("comment")
-    Observable<Void> sendComment(@Body Request request);
+        @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+        @POST("hello")
+        Observable<AuthenticationHolder> register(@Body Request request);
 
-    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
-    @POST("pushregistration")
-    Observable<Void> pushRegister(@Body Request request);
+        @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+        @POST("comment")
+        Observable<Void> sendComment(@Body Request request);
 
+        @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+        @POST("pushregistration")
+        Observable<Void> pushRegister(@Body Request request);
+
+    }
+
+    private static final Retrofit RETROFIT_SERVICE = getServiceInstance();
+
+    private static final Retrofit getServiceInstance() {
+        Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://77.37.212.235:3000/")
+                .addConverterFactory(JacksonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+        if (BuildConfig.DEBUG) {
+            builder.client(new okhttp3.OkHttpClient.Builder().addInterceptor(
+                    new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                    .build());
+        }
+        return builder.build();
+    }
+
+    public static PointRestService getService() {
+        return RETROFIT_SERVICE.create(PointRestService.class);
+    }
 }

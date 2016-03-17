@@ -1,44 +1,45 @@
 package com.easy.pointapp.vcs;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.location.Location;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import com.easy.pointapp.R;
+import com.easy.pointapp.BuildConfig;
+
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.location.Location;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Date;
 
-public class AbstractLocationActivity extends ActionBarActivity implements
-        LocationListener,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+public class AbstractLocationActivity extends ActionBarActivity
+        implements LocationListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "LocationActivity";
+
     private static final long INTERVAL = 1000;
+
     private static final long FASTEST_INTERVAL = 1000;
+
     LocationRequest mLocationRequest;
+
     GoogleApiClient mGoogleApiClient;
+
     public Location mCurrentLocation;
+
     public ProgressDialog locationDialog;
+
     String mLastUpdateTime;
 
     protected void createLocationRequest() {
@@ -59,14 +60,12 @@ public class AbstractLocationActivity extends ActionBarActivity implements
             finish();
         }
         createLocationRequest();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(LocationServices.API)
+                .addConnectionCallbacks(this).addOnConnectionFailedListener(this).build();
         locationDialog = new ProgressDialog(this);
         locationDialog.setTitle("Retrieving location");
-        locationDialog.setMessage("Please enable high accuracy location tracking for love and peace");
+        locationDialog
+                .setMessage("Please enable high accuracy location tracking for love and peace");
 
 
     }
@@ -76,8 +75,7 @@ public class AbstractLocationActivity extends ActionBarActivity implements
         super.onStart();
         Log.d(TAG, "onStart fired ..............");
         mGoogleApiClient.connect();
-        if(!locationDialog.isShowing()&&mCurrentLocation==null)
-        {
+        if (!locationDialog.isShowing() && mCurrentLocation == null) {
             locationDialog.show();
         }
     }
@@ -96,7 +94,8 @@ public class AbstractLocationActivity extends ActionBarActivity implements
         if (ConnectionResult.SUCCESS == status) {
             return true;
         } else {
-            GooglePlayServicesUtil.getErrorDialog(status, this, 0).show();
+            Toast.makeText(this, GooglePlayServicesUtil.getErrorString(status), Toast.LENGTH_LONG)
+                    .show();
             return false;
         }
     }
@@ -104,23 +103,23 @@ public class AbstractLocationActivity extends ActionBarActivity implements
     @Override
     public void onConnected(Bundle bundle) {
         Log.d(TAG, "onConnected - isConnected ...............: " + mGoogleApiClient.isConnected());
-        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if(mCurrentLocation!=null)
-        {
-            Toast.makeText(this,mCurrentLocation.getLatitude()+" "+mCurrentLocation.getLongitude(),Toast.LENGTH_SHORT);
+        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (BuildConfig.DEBUG) {
+            if (mCurrentLocation != null) {
+                Toast.makeText(this,
+                        mCurrentLocation.getLatitude() + " " + mCurrentLocation.getLongitude(),
+                        Toast.LENGTH_SHORT);
 
-        }
-        else
-        {
-            Log.d(TAG,"Last known location is null");
+            } else {
+                Log.d(TAG, "Last known location is null");
+            }
         }
         startLocationUpdates();
     }
 
     protected void startLocationUpdates() {
-        PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
+        PendingResult<Status> pendingResult = LocationServices.FusedLocationApi
+                .requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         Log.d(TAG, "Location update started ..............: ");
     }
 
@@ -139,18 +138,16 @@ public class AbstractLocationActivity extends ActionBarActivity implements
         Log.d(TAG, "Firing onLocationChanged..............................................");
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        if(locationDialog.isShowing())
-        {
+        if (locationDialog.isShowing()) {
             locationDialog.dismiss();
 
         }
-        if(mCurrentLocation!=null)
-        {
-            Toast.makeText(this,mCurrentLocation.getLatitude()+" "+mCurrentLocation.getLongitude(),Toast.LENGTH_SHORT);
+        if (mCurrentLocation != null) {
+            Toast.makeText(this,
+                    mCurrentLocation.getLatitude() + " " + mCurrentLocation.getLongitude(),
+                    Toast.LENGTH_SHORT);
 
-        }
-        else
-        {
+        } else {
             Log.d(TAG, "Last known location is null");
         }
 
@@ -159,11 +156,9 @@ public class AbstractLocationActivity extends ActionBarActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        if(this.isGooglePlayServicesAvailable())
-        {
+        if (this.isGooglePlayServicesAvailable()) {
             stopLocationUpdates();
-            if(locationDialog.isShowing())
-            {
+            if (locationDialog.isShowing()) {
                 locationDialog.dismiss();
             }
         }
@@ -171,8 +166,7 @@ public class AbstractLocationActivity extends ActionBarActivity implements
     }
 
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         Log.d(TAG, "Location update stopped .......................");
     }
 
@@ -183,14 +177,13 @@ public class AbstractLocationActivity extends ActionBarActivity implements
             startLocationUpdates();
             Log.d(TAG, "Location update resumed .....................");
         }
-        if(!locationDialog.isShowing()&&mCurrentLocation==null)
-        {
+        if (!locationDialog.isShowing() && mCurrentLocation == null) {
             locationDialog.show();
         }
     }
+
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         Intent myIntent = new Intent(this, PostsActivity.class);
         myIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(myIntent);

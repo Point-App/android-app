@@ -10,6 +10,8 @@ import com.easy.pointapp.model.Routes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.Reader;
+
 /**
  * Created by Igor on 30.06.2015.
  */
@@ -29,10 +31,10 @@ public class Authorization extends RestClient{
         String json = gson.toJson(authRequest);
         try{
 
-            String jsonResponse = this.post(Routes.REGISTRATION,json);
+            Reader jsonResponse = this.post(Routes.REGISTRATION,json);
             AuthResponse response = new Gson().fromJson(jsonResponse,AuthResponse.class);
             AuthManager.setAuthToken(context,response.token);
-            Log.d("token",response.token);
+//            Log.d("token",response.token);
             return true;
         }
         catch(Exception e)

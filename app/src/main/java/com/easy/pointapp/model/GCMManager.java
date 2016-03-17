@@ -10,6 +10,8 @@ import com.easy.pointapp.model.api.v1.RestClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.Reader;
+
 /**
  * Created by mini1 on 24.07.15.
  */
@@ -26,8 +28,8 @@ public class GCMManager extends RestClient {
         String json = gson.toJson(gcmRequest);
         try{
 
-            String jsonResponse = this.post(Routes.REGISTER_DEVICE,json);
-            Log.e("create response", jsonResponse);
+            Reader jsonResponse = this.post(Routes.REGISTER_DEVICE,json);
+//            Log.e("create response", jsonResponse);
             return true;
         }
         catch(Exception e)

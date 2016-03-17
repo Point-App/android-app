@@ -1,14 +1,60 @@
 package com.easy.pointapp.model.api.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by Igor on 28.06.2015.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Post {
-    public String text;
-    public String _id;
-    public Integer like;
-    public String created;
-    public String distance;
-    public String backdrop;
-    public Integer comments;
+
+    @JsonProperty("text")
+    private String mText;
+
+    @JsonProperty("_id")
+    private String mID;
+
+    @JsonProperty("like")
+    private Integer mLikesNumber;
+
+    @JsonProperty("created")
+    private String mCreatedDate;
+
+    @JsonProperty("distance")
+    private String mDistanceToPost;
+
+    @JsonProperty("backdrop")
+    private String mBackdropColor;
+
+    @JsonProperty("comments")
+    private Integer mCommentsNumber;
+
+    public String getText() {
+        return mText;
+    }
+
+    public String getID() {
+        return mID;
+    }
+
+    public Integer getLikesNumber() {
+        return mLikesNumber;
+    }
+
+    public String getCreatedDate() {
+        return mCreatedDate;
+    }
+
+    public String getDistanceToPost() {
+        return mDistanceToPost;
+    }
+
+    public String getBackdropColor() {
+        return mBackdropColor;
+    }
+
+    public Integer getCommentsNumber() {
+        return mCommentsNumber;
+    }
 }

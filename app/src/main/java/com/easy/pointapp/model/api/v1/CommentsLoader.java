@@ -7,7 +7,6 @@ import com.easy.pointapp.model.AuthManager;
 import com.easy.pointapp.model.PointRestService;
 import com.easy.pointapp.model.Routes;
 import com.easy.pointapp.model.system.DeviceInformationManager;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import android.content.Context;
 
@@ -20,18 +19,6 @@ import rx.Observable;
  * Created by mini1 on 03.07.15.
  */
 public class CommentsLoader extends RestClient {
-
-    public static class CommentsRequest extends PointRestService.RequestBoilerplate {
-
-        @JsonProperty("post")
-        private final String mPostID;
-
-
-        public CommentsRequest(String postID, String user) {
-            super(user);
-            mPostID = postID;
-        }
-    }
 
     public boolean like(Context context, Comment comment) {
         boolean result = false;
@@ -58,9 +45,10 @@ public class CommentsLoader extends RestClient {
         }
     }
 
-    public static Observable<List<Comment>> loadComments(Context context, String post) {
-        return RestClient.getService()
-                .getComments(new CommentsRequest(post, AuthManager.getAuthToken(context)));
+    public static Observable<List<Comment>> loadComments(Context context, String postID) {
+        return RestClient.getService().getComments(
+                new PointRestService.Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                        .addValue("post", postID).build());
     }
 
     public boolean createComment(Context context, String post, String text) {

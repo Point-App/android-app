@@ -5,9 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import com.easy.pointapp.model.AuthManager;
-import com.easy.pointapp.model.system.DeviceInformationManager;
 import com.easy.pointapp.model.PointRestService;
 import com.easy.pointapp.model.Routes;
+import com.easy.pointapp.model.system.DeviceInformationManager;
 
 import android.content.Context;
 import android.location.Location;
@@ -72,13 +72,14 @@ public class PostsLoader extends RestClient {
 
     public static Observable<List<Post>> loadChosenPosts(Context context) {
         return RestClient.getService().getFavouritePosts(
-                new PointRestService.RequestBoilerplate(AuthManager.getAuthToken(context)));
+                new PointRestService.Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                        .build());
     }
 
     public static Observable<List<Post>> loadPosts(Context context, Location location) {
         return RestClient.getService().getPosts(
-                new PointRestService.RequestWithLocation(AuthManager.getAuthToken(context),
-                        location));
+                new PointRestService.Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                        .setLocation(location).build());
     }
 
     public boolean createPost(Context context, Location location, String text) {

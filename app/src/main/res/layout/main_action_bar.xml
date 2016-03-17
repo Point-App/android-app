@@ -37,7 +37,6 @@
         android:id="@+id/segmentedGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:layout_marginTop="@dimen/mab_sg_margin"
         android:layout_marginBottom="@dimen/mab_sg_margin"
         android:gravity="center_horizontal|center_vertical|center"

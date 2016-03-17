@@ -5,6 +5,8 @@ import com.easy.pointapp.model.api.v1.Post;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,9 +74,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ConcretePostViewHo
         personViewHolder.commentsTV.setText(Integer.toString(posts.get(i).getCommentsNumber()));
         personViewHolder.distanceTV.setText(posts.get(i).getDistanceToPost());
         personViewHolder.likesTV.setText(Integer.toString(posts.get(i).getLikesNumber()));
-        personViewHolder.postTV.setText(posts.get(i).getText());
         personViewHolder.postID = posts.get(i).getID();
         personViewHolder.rl.setBackgroundColor(Color.parseColor(posts.get(i).getBackdropColor()));
+
+        personViewHolder.postTV.setAutoLinkMask(Linkify.ALL);
+        personViewHolder.postTV.setClickable(true);
+        personViewHolder.postTV.setMovementMethod(LinkMovementMethod.getInstance());
+        personViewHolder.postTV.setText(posts.get(i).getText());
     }
 
     @Override

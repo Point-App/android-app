@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -57,7 +59,12 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         }
 
         likesTV.setText(Integer.toString(post.getLikesNumber()));
+
+        postTV.setAutoLinkMask(Linkify.ALL);
+        postTV.setClickable(true);
+        postTV.setMovementMethod(LinkMovementMethod.getInstance());
         postTV.setText(post.getText());
+
         postID = post.getID();
         rl.setBackgroundColor(Color.parseColor(post.getBackdropColor()));
     }

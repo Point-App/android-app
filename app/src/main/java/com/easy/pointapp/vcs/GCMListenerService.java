@@ -3,7 +3,7 @@ package com.easy.pointapp.vcs;
 import com.google.android.gms.gcm.GcmListenerService;
 
 import com.easy.pointapp.R;
-import com.easy.pointapp.model.api.v1.NotificationMessage;
+import com.easy.pointapp.model.api.v1.PushNotification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import android.app.NotificationManager;
@@ -30,10 +30,10 @@ public class GCMListenerService extends GcmListenerService {
 
         String message = data.getString("aps");
         try {
-            NotificationMessage notificationMessage = new ObjectMapper()
-                    .readValue(message, NotificationMessage.class);
+            PushNotification pushNotification = new ObjectMapper()
+                    .readValue(message, PushNotification.class);
             Log.d(TAG, "From: " + from);
-            Log.d(TAG, "Message: " + notificationMessage.getAlertText());
+            Log.d(TAG, "Message: " + pushNotification.getAlertText());
             Intent intent = new Intent(this, PostsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent
@@ -43,7 +43,7 @@ public class GCMListenerService extends GcmListenerService {
 
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(notificationMessage.getAlertText()).setAutoCancel(true)
+                    .setContentTitle(pushNotification.getAlertText()).setAutoCancel(true)
                     .setContentIntent(pendingIntent);
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(

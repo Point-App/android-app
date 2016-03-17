@@ -3,8 +3,8 @@ package com.easy.pointapp.vcs;
 import com.crashlytics.android.Crashlytics;
 import com.easy.pointapp.R;
 import com.easy.pointapp.model.AuthManager;
-import com.easy.pointapp.model.api.v1.AuthenticationHolder;
-import com.easy.pointapp.model.api.v1.Authorization;
+import com.easy.pointapp.model.RestClient;
+import com.easy.pointapp.model.api.v1.Authentication;
 import com.easy.pointapp.views.Container;
 import com.easy.pointapp.views.ContainerClient;
 import com.easy.pointapp.views.SingleScreenContainer;
@@ -208,16 +208,14 @@ public class PostsActivity extends AbstractLocationActivity implements Container
     }
 
     public void makeAuth() {
-        Authorization.makeAuth(this, getCurrentLocation()).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<AuthenticationHolder>() {
-                    @Override
-                    public void call(AuthenticationHolder authenticationHolder) {
-                        AuthManager
-                                .setAuthToken(PostsActivity.this, authenticationHolder.getToken());
-                        authFinished(true);
-                    }
-                });
+        RestClient.authenticate(this, getCurrentLocation()).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Authentication>() {
+            @Override
+            public void call(Authentication authentication) {
+                AuthManager.setAuthToken(PostsActivity.this, authentication.getToken());
+                authFinished(true);
+            }
+        });
     }
 
     public Location getCurrentLocation() {

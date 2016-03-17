@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by mini1 on 25.07.15.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NotificationMessage {
+public class PushNotification {
 
     @JsonProperty("alert")
     private String mAlertText;

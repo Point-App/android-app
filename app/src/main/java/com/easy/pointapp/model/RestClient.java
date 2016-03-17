@@ -1,11 +1,12 @@
 package com.easy.pointapp.model;
 
 import com.easy.pointapp.BuildConfig;
-import com.easy.pointapp.model.api.v1.AuthenticationHolder;
+import com.easy.pointapp.model.api.v1.Authentication;
 import com.easy.pointapp.model.api.v1.Comment;
 import com.easy.pointapp.model.api.v1.Post;
 import com.easy.pointapp.model.system.DeviceInformationManager;
 
+import android.content.Context;
 import android.location.Location;
 
 import java.util.HashMap;
@@ -120,7 +121,7 @@ public class RestClient {
 
         @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
         @POST("hello")
-        Observable<AuthenticationHolder> register(@Body Request request);
+        Observable<Authentication> register(@Body Request request);
 
         @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
         @POST("comment")
@@ -148,5 +149,58 @@ public class RestClient {
 
     public static PointRestService getService() {
         return RETROFIT_SERVICE.create(PointRestService.class);
+    }
+
+    public static Observable<Void> likePost(Context context, String postID) {
+        return RestClient.getService().sendLike(
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                        .addValue("type", "post").addValue("target", postID).build());
+    }
+
+    public static Observable<Post> loadPost(Context context, String postID) {
+        return RestClient.getService().loadPost(
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                        .addValue("post", postID).build());
+    }
+
+    public static Observable<List<Post>> loadFavouritePosts(Context context) {
+        return RestClient.getService().loadFavouritePosts(
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context)).build());
+    }
+
+    public static Observable<List<Post>> loadPosts(Context context, Location location) {
+        return RestClient.getService().loadPosts(
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                        .setLocation(location).build());
+    }
+
+    public static Observable<Void> sendPost(Context context, Location location, String body) {
+        return RestClient.getService().sendPost(
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                        .setLocation(location).addValue("text", body).build());
+    }
+
+    public static Observable<Void> likeComment(Context context, String commentID) {
+        return RestClient.getService().sendLike(
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                        .addValue("type", "comment").addValue("target", commentID).build());
+    }
+
+    public static Observable<List<Comment>> loadComments(Context context, String postID) {
+        return RestClient.getService().loadComments(
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                        .addValue("post", postID).build());
+    }
+
+    public static Observable<Void> sendComment(Context context, String postID, String comment) {
+        return RestClient.getService().sendComment(
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                        .addValue("post", postID).addValue("text", comment).build());
+    }
+
+    public static Observable<Authentication> authenticate(Context context, Location location) {
+        return RestClient.getService().register(
+                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
+                        .setLocation(location).build());
     }
 }

@@ -1,8 +1,8 @@
 package com.easy.pointapp.views;
 
 import com.easy.pointapp.R;
+import com.easy.pointapp.model.RestClient;
 import com.easy.pointapp.model.api.v1.Post;
-import com.easy.pointapp.model.api.v1.PostsLoader;
 import com.easy.pointapp.vcs.PostsActivity;
 import com.easy.pointapp.vcs.RVAdapter;
 import com.easy.pointapp.vcs.RecyclerItemClickListener;
@@ -109,7 +109,7 @@ public class PostsView extends RelativeLayout {
     }
 
     private void likePost(String postID) {
-        PostsLoader.like(getContext(), postID).subscribeOn(Schedulers.newThread())
+        RestClient.likePost(getContext(), postID).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
@@ -129,7 +129,7 @@ public class PostsView extends RelativeLayout {
     }
 
     public void loadPosts() {
-        PostsLoader.loadPosts(getContext(), getCurrentLocation())
+        RestClient.loadPosts(getContext(), getCurrentLocation())
                 .observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<List<Post>>() {
                     @Override

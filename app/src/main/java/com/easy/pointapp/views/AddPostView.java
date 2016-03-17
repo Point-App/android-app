@@ -1,7 +1,7 @@
 package com.easy.pointapp.views;
 
 import com.easy.pointapp.R;
-import com.easy.pointapp.model.api.v1.PostsLoader;
+import com.easy.pointapp.model.RestClient;
 import com.easy.pointapp.vcs.PostsActivity;
 
 import android.content.Context;
@@ -31,7 +31,7 @@ public class AddPostView extends RelativeLayout {
         if (TextUtils.isEmpty(postEdit.getText())) {
             Toast.makeText(getContext(), "Too short", Toast.LENGTH_SHORT).show();
         } else {
-            PostsLoader.sendPost(getContext(), getCurrentLocation(), postEdit.getText().toString())
+            RestClient.sendPost(getContext(), getCurrentLocation(), postEdit.getText().toString())
                     .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<Void>() {
                         @Override

@@ -1,10 +1,9 @@
 package com.easy.pointapp.views;
 
 import com.easy.pointapp.R;
+import com.easy.pointapp.model.RestClient;
 import com.easy.pointapp.model.api.v1.Comment;
-import com.easy.pointapp.model.api.v1.CommentsLoader;
 import com.easy.pointapp.model.api.v1.Post;
-import com.easy.pointapp.model.api.v1.PostsLoader;
 import com.easy.pointapp.vcs.CommentAdapter;
 import com.easy.pointapp.vcs.RecyclerItemClickListener;
 
@@ -98,7 +97,7 @@ public class CommentsView extends RelativeLayout {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        //like comment
+                        //likePost comment
                         if (position > 0) {
                             Comment comment = mComments.get(position - 1);
                             likeComment(comment);
@@ -117,7 +116,7 @@ public class CommentsView extends RelativeLayout {
 
     private void likePost() {
         if (mPost != null) {
-            PostsLoader.like(getContext(), mPost.getID()).subscribeOn(Schedulers.newThread())
+            RestClient.likePost(getContext(), mPost.getID()).subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
                 @Override
                 public void call(Void aVoid) {
@@ -139,8 +138,7 @@ public class CommentsView extends RelativeLayout {
             if (TextUtils.isEmpty(postEdit.getText())) {
                 Toast.makeText(getContext(), "Too short", Toast.LENGTH_SHORT).show();
             } else {
-                CommentsLoader
-                        .createComment(getContext(), mPost.getID(), postEdit.getText().toString())
+                RestClient.sendComment(getContext(), mPost.getID(), postEdit.getText().toString())
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
                     @Override
@@ -183,7 +181,7 @@ public class CommentsView extends RelativeLayout {
 
     private void refreshPost() {
         if (mPost != null) {
-            PostsLoader.loadSingle(getContext(), mPost.getID()).subscribeOn(Schedulers.newThread())
+            RestClient.loadPost(getContext(), mPost.getID()).subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Post>() {
                 @Override
                 public void call(Post post) {
@@ -206,25 +204,26 @@ public class CommentsView extends RelativeLayout {
 
     private void likeComment(Comment comment) {
         if (mPost != null) {
-            CommentsLoader.like(getContext(), comment.getID()).subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
-                @Override
-                public void call(Void aVoid) {
-                    loadComments();
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-            });
+            RestClient.likeComment(getContext(), comment.getID())
+                    .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            loadComments();
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
+                    });
         }
     }
 
     public void loadComments() {
         if (mPost != null) {
-            CommentsLoader.loadComments(getContext(), mPost.getID())
-                    .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+            RestClient.loadComments(getContext(), mPost.getID()).subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<List<Comment>>() {
                         @Override
                         public void call(List<Comment> comments) {

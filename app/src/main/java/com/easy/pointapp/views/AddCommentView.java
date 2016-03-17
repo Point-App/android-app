@@ -1,7 +1,7 @@
 package com.easy.pointapp.views;
 
 import com.easy.pointapp.R;
-import com.easy.pointapp.model.api.v1.CommentsLoader;
+import com.easy.pointapp.model.RestClient;
 import com.easy.pointapp.model.api.v1.Post;
 
 import android.content.Context;
@@ -37,7 +37,7 @@ public class AddCommentView extends RelativeLayout {
         if (TextUtils.isEmpty(postEdit.getText())) {
             Toast.makeText(getContext(), "Too short", Toast.LENGTH_SHORT).show();
         } else {
-            CommentsLoader.createComment(getContext(), post.getID(), postEdit.getText().toString())
+            RestClient.sendComment(getContext(), post.getID(), postEdit.getText().toString())
                     .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<Void>() {
                         @Override

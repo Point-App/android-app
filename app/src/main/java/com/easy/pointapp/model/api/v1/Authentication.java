@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by Igor on 28.06.2015.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AuthenticationHolder {
+public class Authentication {
 
     @JsonProperty("token")
     private String mToken;

@@ -3,7 +3,8 @@ package com.easy.pointapp.vcs;
 import com.crashlytics.android.Crashlytics;
 import com.easy.pointapp.R;
 import com.easy.pointapp.model.AuthManager;
-import com.easy.pointapp.vcs.tasks.AuthTask;
+import com.easy.pointapp.model.api.v1.AuthenticationHolder;
+import com.easy.pointapp.model.api.v1.Authorization;
 import com.easy.pointapp.views.Container;
 import com.easy.pointapp.views.ContainerClient;
 import com.easy.pointapp.views.SingleScreenContainer;
@@ -27,9 +28,11 @@ import android.widget.TextView;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
 import io.fabric.sdk.android.Fabric;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
-public class PostsActivity extends AbstractLocationActivity
-        implements AuthTask.AuthTaskClient, ContainerClient, IAsyncVC {
+public class PostsActivity extends AbstractLocationActivity implements ContainerClient, IAsyncVC {
 
     boolean noLocationFlag;
 
@@ -205,12 +208,18 @@ public class PostsActivity extends AbstractLocationActivity
     }
 
     public void makeAuth() {
-        AuthTask task = new AuthTask(this, this);
-        task.execute();
+        Authorization.makeAuth(this, getCurrentLocation()).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<AuthenticationHolder>() {
+                    @Override
+                    public void call(AuthenticationHolder authenticationHolder) {
+                        AuthManager
+                                .setAuthToken(PostsActivity.this, authenticationHolder.getToken());
+                        authFinished(true);
+                    }
+                });
     }
 
-    //AuthPostsClient
-    @Override
     public Location getCurrentLocation() {
         return mCurrentLocation;
     }

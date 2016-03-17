@@ -11,7 +11,6 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.easy.pointapp.R;
-import com.easy.pointapp.model.api.v1.AuthResponse;
 import com.easy.pointapp.model.api.v1.NotificationMessage;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.google.gson.Gson;

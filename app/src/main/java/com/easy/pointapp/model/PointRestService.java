@@ -1,5 +1,6 @@
 package com.easy.pointapp.model;
 
+import com.easy.pointapp.model.api.v1.AuthenticationHolder;
 import com.easy.pointapp.model.api.v1.Comment;
 import com.easy.pointapp.model.api.v1.Post;
 import com.easy.pointapp.model.system.DeviceInformationManager;
@@ -109,5 +110,9 @@ public interface PointRestService {
     @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
     @POST("details")
     Observable<List<Comment>> loadComments(@Body Request request);
+
+    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+    @POST("hello")
+    Observable<AuthenticationHolder> register(@Body Request request);
 
 }

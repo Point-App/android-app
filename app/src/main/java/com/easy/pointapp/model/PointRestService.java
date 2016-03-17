@@ -119,4 +119,8 @@ public interface PointRestService {
     @POST("comment")
     Observable<Void> sendComment(@Body Request request);
 
+    @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
+    @POST("pushregistration")
+    Observable<Void> pushRegister(@Body Request request);
+
 }

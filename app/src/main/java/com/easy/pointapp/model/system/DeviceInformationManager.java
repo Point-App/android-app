@@ -1,4 +1,4 @@
-package com.easy.pointapp.model;
+package com.easy.pointapp.model.system;
 
 import android.os.Build;
 
@@ -14,11 +14,7 @@ public class DeviceInformationManager {
     }
     public static String getDeviceModel()
     {
-        String manufacturer = Build.MANUFACTURER;
-        String brand        = Build.BRAND;
-        String product      = Build.PRODUCT;
-        String model        = Build.MODEL;
-        return manufacturer+" "+brand+" "+product+" "+model;
+        return "Unknown device";
     }
     public static String getOSVersion()
     {

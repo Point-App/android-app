@@ -1,11 +1,10 @@
 package com.easy.pointapp.model.api.v1;
 
 import android.content.Context;
-import android.location.Location;
 import android.util.Log;
 
 import com.easy.pointapp.model.AuthManager;
-import com.easy.pointapp.model.DeviceInformationManager;
+import com.easy.pointapp.model.system.DeviceInformationManager;
 import com.easy.pointapp.model.Routes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

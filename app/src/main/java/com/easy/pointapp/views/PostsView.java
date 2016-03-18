@@ -3,6 +3,7 @@ package com.easy.pointapp.views;
 import com.easy.pointapp.R;
 import com.easy.pointapp.model.RestClient;
 import com.easy.pointapp.model.api.v1.Post;
+import com.easy.pointapp.vcs.IAsyncVC;
 import com.easy.pointapp.vcs.PostsActivity;
 import com.easy.pointapp.vcs.RVAdapter;
 import com.easy.pointapp.vcs.RecyclerItemClickListener;
@@ -109,15 +110,18 @@ public class PostsView extends RelativeLayout {
     }
 
     private void likePost(String postID) {
+        ((IAsyncVC) getContext()).backgroundWorkStarted();
         RestClient.likePost(getContext(), postID).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
+                ((IAsyncVC) getContext()).backgroundWorkFinished();
                 postLiked(true);
             }
         }, new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
+                ((IAsyncVC) getContext()).backgroundWorkFinished();
                 throwable.printStackTrace();
                 postLiked(false);
             }
@@ -129,16 +133,19 @@ public class PostsView extends RelativeLayout {
     }
 
     public void loadPosts() {
+        ((IAsyncVC) getContext()).backgroundWorkStarted();
         RestClient.loadPosts(getContext(), getCurrentLocation())
                 .observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<List<Post>>() {
                     @Override
                     public void call(List<Post> posts) {
+                        ((IAsyncVC) getContext()).backgroundWorkFinished();
                         loadedPosts(posts);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+                        ((IAsyncVC) getContext()).backgroundWorkFinished();
                         throwable.printStackTrace();
                         stateText.setText("Jesus!\nCouldn't connect to server.\nTry again later.");
                         stateText.setVisibility(TextView.VISIBLE);

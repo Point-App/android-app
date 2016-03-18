@@ -5,6 +5,7 @@ import com.easy.pointapp.model.RestClient;
 import com.easy.pointapp.model.api.v1.Comment;
 import com.easy.pointapp.model.api.v1.Post;
 import com.easy.pointapp.vcs.CommentAdapter;
+import com.easy.pointapp.vcs.IAsyncVC;
 import com.easy.pointapp.vcs.RecyclerItemClickListener;
 
 import android.content.Context;
@@ -116,15 +117,18 @@ public class CommentsView extends RelativeLayout {
 
     private void likePost() {
         if (mPost != null) {
+            ((IAsyncVC) getContext()).backgroundWorkStarted();
             RestClient.likePost(getContext(), mPost.getID()).subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
                 @Override
                 public void call(Void aVoid) {
+                    ((IAsyncVC) getContext()).backgroundWorkFinished();
                     postLiked(true);
                 }
             }, new Action1<Throwable>() {
                 @Override
                 public void call(Throwable throwable) {
+                    ((IAsyncVC) getContext()).backgroundWorkFinished();
                     throwable.printStackTrace();
                     postLiked(false);
                 }
@@ -138,16 +142,19 @@ public class CommentsView extends RelativeLayout {
             if (TextUtils.isEmpty(postEdit.getText())) {
                 Toast.makeText(getContext(), "Too short", Toast.LENGTH_SHORT).show();
             } else {
+                ((IAsyncVC) getContext()).backgroundWorkStarted();
                 RestClient.sendComment(getContext(), mPost.getID(), postEdit.getText().toString())
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
+                        ((IAsyncVC) getContext()).backgroundWorkFinished();
                         commentAdded(true);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+                        ((IAsyncVC) getContext()).backgroundWorkFinished();
                         throwable.printStackTrace();
                         commentAdded(false);
                     }
@@ -157,6 +164,7 @@ public class CommentsView extends RelativeLayout {
     }
 
     public void postLiked(boolean result) {
+        ((IAsyncVC) getContext()).backgroundWorkFinished();
         this.refreshPost();
     }
 
@@ -181,15 +189,18 @@ public class CommentsView extends RelativeLayout {
 
     private void refreshPost() {
         if (mPost != null) {
+            ((IAsyncVC) getContext()).backgroundWorkStarted();
             RestClient.loadPost(getContext(), mPost.getID()).subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Post>() {
                 @Override
                 public void call(Post post) {
+                    ((IAsyncVC) getContext()).backgroundWorkFinished();
                     loadedPost(post);
                 }
             }, new Action1<Throwable>() {
                 @Override
                 public void call(Throwable throwable) {
+                    ((IAsyncVC) getContext()).backgroundWorkFinished();
                     throwable.printStackTrace();
                 }
             });
@@ -204,16 +215,19 @@ public class CommentsView extends RelativeLayout {
 
     private void likeComment(Comment comment) {
         if (mPost != null) {
+            ((IAsyncVC) getContext()).backgroundWorkStarted();
             RestClient.likeComment(getContext(), comment.getID())
                     .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<Void>() {
                         @Override
                         public void call(Void aVoid) {
+                            ((IAsyncVC) getContext()).backgroundWorkFinished();
                             loadComments();
                         }
                     }, new Action1<Throwable>() {
                         @Override
                         public void call(Throwable throwable) {
+                            ((IAsyncVC) getContext()).backgroundWorkFinished();
                             throwable.printStackTrace();
                         }
                     });
@@ -222,16 +236,19 @@ public class CommentsView extends RelativeLayout {
 
     public void loadComments() {
         if (mPost != null) {
+            ((IAsyncVC) getContext()).backgroundWorkStarted();
             RestClient.loadComments(getContext(), mPost.getID()).subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<List<Comment>>() {
                         @Override
                         public void call(List<Comment> comments) {
+                            ((IAsyncVC) getContext()).backgroundWorkFinished();
                             loadedComments(comments);
                         }
                     }, new Action1<Throwable>() {
                         @Override
                         public void call(Throwable throwable) {
+                            ((IAsyncVC) getContext()).backgroundWorkFinished();
                             throwable.printStackTrace();
                             Toast.makeText(getContext(), "Error occured(", Toast.LENGTH_LONG);
                         }
@@ -241,20 +258,11 @@ public class CommentsView extends RelativeLayout {
     }
 
     public void loadedComments(List<Comment> comments) {
-        if (mPost != null) {
-            this.mComments = comments;
-            if (mSwipeRefreshLayout.isRefreshing()) {
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-            if (comments != null) {
-                mCommentAdapter.setComments(comments);
-
-            } else {
-            }
+        mComments = comments;
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
         }
+        mCommentAdapter.setComments(mComments);
     }
 
-    public void commentLiked(boolean result) {
-        loadComments();
-    }
 }

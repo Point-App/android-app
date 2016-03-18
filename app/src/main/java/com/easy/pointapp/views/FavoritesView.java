@@ -3,6 +3,7 @@ package com.easy.pointapp.views;
 import com.easy.pointapp.model.RestClient;
 import com.easy.pointapp.model.api.v1.Post;
 import com.easy.pointapp.vcs.FavoritesAdapter;
+import com.easy.pointapp.vcs.IAsyncVC;
 import com.easy.pointapp.vcs.RVAdapter;
 
 import android.content.Context;
@@ -25,15 +26,18 @@ public class FavoritesView extends PostsView {
     }
 
     public void loadPosts() {
+        ((IAsyncVC) getContext()).backgroundWorkStarted();
         RestClient.loadFavouritePosts(getContext()).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<List<Post>>() {
             @Override
             public void call(List<Post> posts) {
+                ((IAsyncVC) getContext()).backgroundWorkFinished();
                 loadedPosts(posts);
             }
         }, new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
+                ((IAsyncVC) getContext()).backgroundWorkFinished();
                 throwable.printStackTrace();
                 failedLoad();
             }

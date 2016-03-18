@@ -6,6 +6,7 @@ import com.easy.pointapp.model.api.v1.ApiVersion;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -21,12 +22,12 @@ public class AuthManager {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         if (ApiVersion.apiVersion.equals(settings.getString(AUTH_VERSION, null))) {
             String token = settings.getString(AUTH_TOKEN, null);
-            if (BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG && !TextUtils.isEmpty(token)) {
                 Log.d("Device Token", token);
             }
             return token;
         } else {
-            settings.edit().remove(AUTH_TOKEN).putString(AUTH_TOKEN, ApiVersion.apiVersion)
+            settings.edit().remove(AUTH_TOKEN).putString(AUTH_VERSION, ApiVersion.apiVersion)
                     .commit();
             return null;
         }

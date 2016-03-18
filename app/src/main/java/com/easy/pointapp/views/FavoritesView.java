@@ -1,33 +1,46 @@
 package com.easy.pointapp.views;
 
-import android.app.Activity;
+import com.easy.pointapp.model.RestClient;
+import com.easy.pointapp.model.api.v1.Post;
+import com.easy.pointapp.vcs.FavoritesAdapter;
+import com.easy.pointapp.vcs.RVAdapter;
+
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.easy.pointapp.model.api.v1.Post;
-import com.easy.pointapp.vcs.FavoritesAdapter;
-import com.easy.pointapp.vcs.IAsyncVC;
-import com.easy.pointapp.vcs.RVAdapter;
-import com.easy.pointapp.vcs.tasks.LoadFavoritesTask;
-import com.easy.pointapp.vcs.tasks.LoadPostsTask;
-
 import java.util.ArrayList;
+import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by mini1 on 09.08.15.
  */
-public class FavoritesView extends PostsView implements LoadFavoritesTask.LoadFavoritesClient {
+public class FavoritesView extends PostsView {
+
     public FavoritesView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-    public void loadPosts()
-    {
 
-        LoadFavoritesTask task = new LoadFavoritesTask((Activity)getContext(),this,(IAsyncVC)getContext());
-        task.execute();
+    public void loadPosts() {
+        RestClient.loadFavouritePosts(getContext()).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<List<Post>>() {
+            @Override
+            public void call(List<Post> posts) {
+                loadedPosts(posts);
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                throwable.printStackTrace();
+                failedLoad();
+            }
+        });
     }
-    public RVAdapter getAdapter()
-    {
+
+    public RVAdapter getAdapter() {
         return new FavoritesAdapter(new ArrayList<Post>());
     }
 }

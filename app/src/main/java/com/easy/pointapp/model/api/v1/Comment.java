@@ -1,18 +1,67 @@
 package com.easy.pointapp.model.api.v1;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Created by mini1 on 03.07.15.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Comment {
-    public String text;
-    public String user;
-    public String post;
-    public String _id;
-    public Integer __v;
-    public Integer like;
-    public String icon;
-    public String icon_color;
-    public String created;
+
+    @JsonProperty("text")
+    private String mText;
+
+    @JsonProperty("user")
+    private String mUser;
+
+    @JsonProperty("post")
+    private String mPost;
+
+    @JsonProperty("_id")
+    private String mID;
+
+    @JsonProperty("like")
+    private Integer mLikeNumber;
+
+    @JsonProperty("icon")
+    private String mIcon;
+
+    @JsonProperty("icon_color")
+    private String mIconColor;
+
+    @JsonProperty("created")
+    private String mCreatedDate;
+
+    public String getText() {
+        return mText;
+    }
+
+    public String getUser() {
+        return mUser;
+    }
+
+    public String getPost() {
+        return mPost;
+    }
+
+    public String getID() {
+        return mID;
+    }
+
+    public Integer getLikeNumber() {
+        return mLikeNumber;
+    }
+
+    public String getIcon() {
+        return mIcon;
+    }
+
+    public String getIconColor() {
+        return mIconColor;
+    }
+
+    public String getCreatedDate() {
+        return mCreatedDate;
+    }
 }

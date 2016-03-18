@@ -2,6 +2,7 @@ package com.easy.pointapp.views;
 
 import com.easy.pointapp.R;
 import com.easy.pointapp.model.RestClient;
+import com.easy.pointapp.vcs.IAsyncVC;
 import com.easy.pointapp.vcs.PostsActivity;
 
 import android.content.Context;
@@ -31,16 +32,19 @@ public class AddPostView extends RelativeLayout {
         if (TextUtils.isEmpty(postEdit.getText())) {
             Toast.makeText(getContext(), "Too short", Toast.LENGTH_SHORT).show();
         } else {
+            ((IAsyncVC) getContext()).backgroundWorkStarted();
             RestClient.sendPost(getContext(), getCurrentLocation(), postEdit.getText().toString())
                     .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<Void>() {
                         @Override
                         public void call(Void aVoid) {
+                            ((IAsyncVC) getContext()).backgroundWorkFinished();
                             postAdded(true);
                         }
                     }, new Action1<Throwable>() {
                         @Override
                         public void call(Throwable throwable) {
+                            ((IAsyncVC) getContext()).backgroundWorkFinished();
                             postAdded(false);
                             throwable.printStackTrace();
                         }

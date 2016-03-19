@@ -76,6 +76,10 @@ public class RestClient {
                         .addValue(KEY_LONGITUDE, Double.toString(location.getLongitude()));
             }
 
+            public Request getRequest()
+            {
+                return mRequest;
+            }
             public Request build() {
                 if (!mRequest.containsKey(KEY_APPLICATION_VERSION)) {
                     setApplicationVersion(DeviceInformationManager.getAppVersion());

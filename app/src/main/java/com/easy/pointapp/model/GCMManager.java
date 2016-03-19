@@ -12,6 +12,6 @@ public class GCMManager extends RestClient {
     public static Observable<Void> registerDevice(Context context, String pushToken) {
         return RestClient.getService().pushRegister(
                 new Request.Builder().setUserID(AuthManager.getAuthToken(context))
-                        .addValue("platform", "gcm").addValue("push_token", pushToken).build());
+                        .addValue("platform", "gcm").addValue("push_token", pushToken).getRequest());
     }
 }

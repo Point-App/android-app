@@ -137,10 +137,11 @@ public class RestClient {
 
     }
 
-    private static final Retrofit RETROFIT_SERVICE = getServiceInstance();
+    private static final Retrofit RETROFIT_SERVICE = getServiceInstance("http://77.37.212.235:3000/");
+    private static final Retrofit NEW_API_SERVICE = getServiceInstance("http://77.37.212.235:4000/");
 
-    private static final Retrofit getServiceInstance() {
-        Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://77.37.212.235:3000/")
+    private static final Retrofit getServiceInstance(String baseURL) {
+        Retrofit.Builder builder = new Retrofit.Builder().baseUrl(baseURL)
                 .addConverterFactory(JacksonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
         if (BuildConfig.DEBUG) {
@@ -151,6 +152,9 @@ public class RestClient {
         return builder.build();
     }
 
+    public static PointRestService getNewService() {
+        return NEW_API_SERVICE.create(PointRestService.class);
+    }
     public static PointRestService getService() {
         return RETROFIT_SERVICE.create(PointRestService.class);
     }
@@ -173,7 +177,7 @@ public class RestClient {
     }
 
     public static Observable<List<Post>> loadPosts(Context context, Location location) {
-        return RestClient.getService().loadPosts(
+        return RestClient.getNewService().loadPosts(
                 new Request.Builder().setUserID(AuthManager.getAuthToken(context))
                         .setLocation(location).build());
     }

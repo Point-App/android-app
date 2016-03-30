@@ -25,7 +25,7 @@ android {
         applicationId "com.easy.pointapp"
         minSdkVersion 17
         targetSdkVersion 22
-        versionCode 7
+        versionCode 9
         versionName "1.0"
     }
     buildTypes {

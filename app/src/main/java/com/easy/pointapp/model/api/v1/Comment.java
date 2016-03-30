@@ -18,7 +18,6 @@ public class Comment {
     @JsonProperty("post")
     private String mPost;
 
-    @JsonProperty("_id")
     private String mID;
 
     @JsonProperty("like")
@@ -32,6 +31,9 @@ public class Comment {
 
     @JsonProperty("created")
     private String mCreatedDate;
+
+    public void set_id (String _id){this.mID = _id;}
+    public void setId (String id){this.mID = id;}
 
     public String getText() {
         return mText;

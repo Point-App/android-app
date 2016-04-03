@@ -140,16 +140,19 @@ public class PostsView extends RelativeLayout {
                     @Override
                     public void call(List<Post> posts) {
                         ((IAsyncVC) getContext()).backgroundWorkFinished();
-                        loadedPosts(posts);
+                        if(posts!=null) {
+                            loadedPosts(posts);
+                        } else {
+                            failedLoad();
+                        }
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         ((IAsyncVC) getContext()).backgroundWorkFinished();
                         throwable.printStackTrace();
-                        stateText.setText("Jesus!\nCouldn't connect to server.\nTry again later.");
-                        stateText.setVisibility(TextView.VISIBLE);
-                        Toast.makeText(getContext(), "Error occured(", Toast.LENGTH_LONG);
+                        failedLoad();
                     }
                 });
     }
@@ -158,6 +161,9 @@ public class PostsView extends RelativeLayout {
         stateText.setText("Jesus!\nCouldn't connect to server.\nTry again later.");
         stateText.setVisibility(TextView.VISIBLE);
         Toast.makeText(getContext(), "Error occured(", Toast.LENGTH_LONG);
+        if(mSwipeRefreshLayout.isRefreshing()){
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     public void loadedPosts(List<Post> posts) {

@@ -12,7 +12,10 @@ public class Post {
     @JsonProperty("text")
     private String mText;
 
-    @JsonProperty("id")
+    public void set_id (String _id){this.mID = _id;}
+
+    public void setId (String id){this.mID = id;}
+
     private String mID;
 
     @JsonProperty("like")

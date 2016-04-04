@@ -166,7 +166,7 @@ public class RestClient {
     }
 
     public static Observable<Post> loadPost(Context context, String postID) {
-        return RestClient.getService().loadPost(
+        return RestClient.getNewService().loadPost(
                 new Request.Builder().setUserID(AuthManager.getAuthToken(context))
                         .addValue("post", postID).build());
     }

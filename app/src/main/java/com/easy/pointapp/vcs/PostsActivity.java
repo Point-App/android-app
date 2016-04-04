@@ -25,6 +25,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
 import io.fabric.sdk.android.Fabric;
@@ -216,6 +217,16 @@ public class PostsActivity extends AbstractLocationActivity implements Container
                 backgroundWorkFinished();
                 AuthManager.setAuthToken(PostsActivity.this, authentication.getToken());
                 authFinished(true);
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                backgroundWorkFinished();
+                authFinished(false);
+                throwable.printStackTrace();
+                finish();
+                Toast.makeText(PostsActivity.this, "No internet connection", Toast.LENGTH_SHORT)
+                        .show();
             }
         });
     }

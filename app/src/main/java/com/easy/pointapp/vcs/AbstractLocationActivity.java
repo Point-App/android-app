@@ -74,7 +74,9 @@ public class AbstractLocationActivity extends ActionBarActivity
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart fired ..............");
-        mGoogleApiClient.connect();
+        if(mGoogleApiClient!=null) {
+            mGoogleApiClient.connect();
+        }
         if (!locationDialog.isShowing() && mCurrentLocation == null) {
             locationDialog.show();
         }
@@ -85,8 +87,10 @@ public class AbstractLocationActivity extends ActionBarActivity
         super.onStop();
 
         Log.d(TAG, "onStop fired ..............");
-        mGoogleApiClient.disconnect();
-        Log.d(TAG, "isConnected ...............: " + mGoogleApiClient.isConnected());
+        if(mGoogleApiClient!=null){
+            mGoogleApiClient.disconnect();
+            Log.d(TAG, "isConnected ...............: " + mGoogleApiClient.isConnected());
+        }
     }
 
     private boolean isGooglePlayServicesAvailable() {
@@ -157,7 +161,7 @@ public class AbstractLocationActivity extends ActionBarActivity
     protected void onPause() {
         super.onPause();
         if (this.isGooglePlayServicesAvailable()) {
-            stopLocationUpdates();
+            this.stopLocationUpdates();
             if (locationDialog.isShowing()) {
                 locationDialog.dismiss();
             }
@@ -166,8 +170,15 @@ public class AbstractLocationActivity extends ActionBarActivity
     }
 
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        Log.d(TAG, "Location update stopped .......................");
+        if(mGoogleApiClient!=null)
+        {
+            if(mGoogleApiClient.isConnected())
+            {
+                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+                Log.d(TAG, "Location update stopped .......................");
+            }
+        }
+
     }
 
     @Override

@@ -111,21 +111,23 @@ public class PostsView extends RelativeLayout {
 
     private void likePost(String postID) {
         ((IAsyncVC) getContext()).backgroundWorkStarted();
-        RestClient.likePost(getContext(), postID).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                ((IAsyncVC) getContext()).backgroundWorkFinished();
-                postLiked(true);
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                ((IAsyncVC) getContext()).backgroundWorkFinished();
-                throwable.printStackTrace();
-                postLiked(false);
-            }
-        });
+        RestClient.likePost(getContext(), postID)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        ((IAsyncVC) getContext()).backgroundWorkFinished();
+                        postLiked(true);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        ((IAsyncVC) getContext()).backgroundWorkFinished();
+                        throwable.printStackTrace();
+                        postLiked(false);
+                    }
+                });
     }
 
     public RVAdapter getAdapter() {
@@ -133,28 +135,34 @@ public class PostsView extends RelativeLayout {
     }
 
     public void loadPosts() {
-        ((IAsyncVC) getContext()).backgroundWorkStarted();
-        RestClient.loadPosts(getContext(), getCurrentLocation())
-                .observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<List<Post>>() {
-                    @Override
-                    public void call(List<Post> posts) {
-                        ((IAsyncVC) getContext()).backgroundWorkFinished();
-                        if(posts!=null) {
-                            loadedPosts(posts);
-                        } else {
+        Location location = this.getCurrentLocation();
+        if(location!=null)
+        {
+            ((IAsyncVC) getContext()).backgroundWorkStarted();
+            RestClient.loadPosts(getContext(), location)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(new Action1<List<Post>>() {
+                        @Override
+                        public void call(List<Post> posts) {
+                            ((IAsyncVC) getContext()).backgroundWorkFinished();
+                            if(posts!=null) {
+                                loadedPosts(posts);
+                            } else {
+                                failedLoad();
+                            }
+
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            ((IAsyncVC) getContext()).backgroundWorkFinished();
+                            throwable.printStackTrace();
                             failedLoad();
                         }
+                    });
+        }
 
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        ((IAsyncVC) getContext()).backgroundWorkFinished();
-                        throwable.printStackTrace();
-                        failedLoad();
-                    }
-                });
     }
 
     public void failedLoad() {

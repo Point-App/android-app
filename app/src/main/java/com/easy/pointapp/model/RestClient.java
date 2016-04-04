@@ -116,7 +116,7 @@ public class RestClient {
         Observable<List<Post>> loadPosts(@Body Request request);
 
         @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
-        @POST("show2")
+        @POST("feed")
         Observable<List<Post>> loadFavouritePosts(@Body Request request);
 
         @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
@@ -172,7 +172,7 @@ public class RestClient {
     }
 
     public static Observable<List<Post>> loadFavouritePosts(Context context) {
-        return RestClient.getService().loadFavouritePosts(
+        return RestClient.getNewService().loadFavouritePosts(
                 new Request.Builder().setUserID(AuthManager.getAuthToken(context)).build());
     }
 

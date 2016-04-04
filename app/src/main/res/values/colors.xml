@@ -2,4 +2,11 @@
 <resources>
     <color name="action_bar_background">#3B7BDA</color>
     <color name="white_text">#FFFFFF</color>
+
+    <color name="colorPrimary">#3B7BDA</color>
+    <color name="colorPrimaryDark">#125688</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="colorAccent">#c8e8ff</color>
 </resources>

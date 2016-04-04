@@ -1,7 +1,4 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
     <!--post_card_view-->
     <dimen name="pcv_rl_padding">16dp</dimen>
     <dimen name="pcv_distance_font_size">16sp</dimen>
@@ -31,4 +28,13 @@
     <dimen name="mab_sgb_padding_bottom">8dp</dimen>
     <dimen name="mab_sgb_font_size">18sp</dimen>
     <dimen name="mab_sgb_small_font_size">14sp</dimen>
+
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="tab_max_width">264dp</dimen>
+    <dimen name="tab_padding_bottom">16dp</dimen>
+    <dimen name="tab_label">14sp</dimen>
+    <dimen name="custom_tab_layout_height">72dp</dimen>
 </resources>

@@ -17,14 +17,21 @@ import java.util.List;
 /**
  * Created by nixan on 04.04.16.
  */
-public class PostsAdapter extends RecyclerView.Adapter<PostViewHolder> {
+public class PostsAdapter extends RecyclerView.Adapter<PostViewHolder>
+        implements View.OnClickListener {
 
     private List<Post> mPostList = new ArrayList<>();
+
+    private View.OnClickListener mOnClickListener;
 
     public void setPosts(List<Post> posts) {
         mPostList.clear();
         mPostList.addAll(posts);
         notifyDataSetChanged();
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        mOnClickListener = onClickListener;
     }
 
     @Override
@@ -33,6 +40,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostViewHolder> {
                 .inflate(R.layout.post_card_view, parent, false);
         PostViewHolder postViewHolder = new PostViewHolder(view);
         view.setClickable(true);
+        view.setOnClickListener(this);
         return postViewHolder;
     }
 
@@ -59,5 +67,16 @@ public class PostsAdapter extends RecyclerView.Adapter<PostViewHolder> {
     @Override
     public int getItemCount() {
         return mPostList.size();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (mOnClickListener != null) {
+            mOnClickListener.onClick(view);
+        }
+    }
+
+    public List<Post> getPosts() {
+        return mPostList;
     }
 }

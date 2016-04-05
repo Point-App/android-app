@@ -6,6 +6,7 @@ import com.easy.pointapp.model.RestClient;
 import com.easy.pointapp.model.api.v1.Post;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -35,11 +36,14 @@ import rx.schedulers.Schedulers;
 /**
  * Created by nixan on 04.04.16.
  */
-public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class PostsFragment extends Fragment
+        implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
 
     private final PostsAdapter mAdapter = new PostsAdapter();
 
     private SwipeRefreshLayout mRefreshLayout;
+
+    private RecyclerView mRecyclerView;
 
     public static final PostsFragment newInstance() {
         return new PostsFragment();
@@ -50,11 +54,17 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.posts_list, container, false);
+
         mRefreshLayout = ((SwipeRefreshLayout) view.findViewById(R.id.swipe));
         mRefreshLayout.setOnRefreshListener(this);
-        ((RecyclerView) view.findViewById(R.id.list))
+
+        mRecyclerView = ((RecyclerView) view.findViewById(R.id.list));
+        mRecyclerView
                 .setLayoutManager(new LinearLayoutManager(container.getContext()));
-        ((RecyclerView) view.findViewById(R.id.list)).setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnClickListener(this);
+
         loadPosts();
         return view;
     }
@@ -116,5 +126,13 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        int position = mRecyclerView.getChildAdapterPosition(view);
+        Intent intent = new Intent(getContext(), PostActivity.class);
+        getActivity().startActivity(intent);
     }
 }

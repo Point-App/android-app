@@ -61,7 +61,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
+        <activity
+                android:name=".PostActivity"/>
         <activity
                 android:name=".vcs.PostsActivity"
                 android:screenOrientation="portrait">

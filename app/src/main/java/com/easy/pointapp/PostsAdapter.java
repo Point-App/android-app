@@ -43,7 +43,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostViewHolder> {
         holder.distanceTV.setText(getItemAtPosition(position).getDistanceToPost());
         holder.likesTV.setText(Integer.toString(getItemAtPosition(position).getLikesNumber()));
         holder.postID = getItemAtPosition(position).getID();
-        holder.rl.setBackgroundColor(
+        holder.cv.setCardBackgroundColor(
                 Color.parseColor(getItemAtPosition(position).getBackdropColor()));
 
         holder.postTV.setAutoLinkMask(Linkify.ALL);

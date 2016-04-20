@@ -66,7 +66,7 @@ public class RestClient {
             }
 
             public Builder setDeviceFingerprint(String osVersion, String sdkName,
-                    String sdkVersion) {
+                                                String sdkVersion) {
                 return addValue(KEY_DEVICE_OS, "OS: android : " + osVersion + " : " +
                         sdkName + " : sdk=" + sdkVersion);
             }
@@ -120,7 +120,7 @@ public class RestClient {
         Observable<List<Post>> loadFavouritePosts(@Body Request request);
 
         @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
-        @POST("details")
+        @POST("comments")
         Observable<List<Comment>> loadComments(@Body Request request);
 
         @Headers({"Accept: application/json; charset=utf-8", "Content-Type: application/json"})
@@ -195,7 +195,7 @@ public class RestClient {
     }
 
     public static Observable<List<Comment>> loadComments(Context context, String postID) {
-        return RestClient.getService().loadComments(
+        return RestClient.getNewService().loadComments(
                 new Request.Builder().setUserID(AuthManager.getAuthToken(context))
                         .addValue("post", postID).build());
     }

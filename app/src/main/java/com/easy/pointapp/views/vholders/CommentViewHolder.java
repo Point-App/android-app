@@ -49,7 +49,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder {
 
     public void setComment(Comment comment) {
         PrettyTime p = new PrettyTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         try {

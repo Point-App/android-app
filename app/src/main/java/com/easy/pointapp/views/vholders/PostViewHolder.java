@@ -40,8 +40,8 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
     public PostViewHolder(View itemView) {
         super(itemView);
         cv = (CardView) itemView.findViewById(R.id.cv);
-        distanceTV = (TextView) itemView.findViewById(R.id.distanceTV);
-        postTV = (TextView) itemView.findViewById(R.id.postTV);
+        distanceTV = (TextView) itemView.findViewById(R.id.commentDistanceAndLikes);
+        postTV = (TextView) itemView.findViewById(R.id.commentText);
         commentsTV = (TextView) itemView.findViewById(R.id.commentsTV);
         likesTV = (TextView) itemView.findViewById(R.id.likesTV);
         likesLL = (LinearLayout) itemView.findViewById(R.id.likesLL);

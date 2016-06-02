@@ -5,9 +5,12 @@ import com.easy.pointapp.model.api.v1.Comment;
 import com.easy.pointapp.model.api.v1.Post;
 import com.easy.pointapp.views.vholders.CommentViewHolder;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -42,8 +45,26 @@ public class PostFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().postponeEnterTransition();
+        }
         View result = inflater.inflate(R.layout.post_fragment, container, false);
-        ((Toolbar) result.findViewById(R.id.anim_toolbar)).setTitle(mPost.getText());
+        ((AppCompatActivity) getActivity())
+                .setSupportActionBar(((Toolbar) result.findViewById(R.id.anim_toolbar)));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mPost.getText());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            float[] hsvColor = new float[3];
+            Color.colorToHSV(Color.parseColor(mPost.getBackdropColor()), hsvColor);
+            hsvColor[2] *= 0.8;
+            int statusBarColor = Color.HSVToColor(hsvColor);
+            getActivity().getWindow().setStatusBarColor(statusBarColor);
+        }
+
+        result.findViewById(R.id.appbar)
+                .setBackgroundColor(Color.parseColor(mPost.getBackdropColor()));
         ((RecyclerView) result.findViewById(R.id.scrollableview))
                 .setLayoutManager(new LinearLayoutManager(getContext()));
         ((RecyclerView) result.findViewById(R.id.scrollableview)).setAdapter(mCommentsAdapter);
@@ -53,6 +74,9 @@ public class PostFragment extends Fragment {
                     @Override
                     public void call(List<Comment> comments) {
                         mCommentsAdapter.setItems(comments);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            getActivity().startPostponedEnterTransition();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

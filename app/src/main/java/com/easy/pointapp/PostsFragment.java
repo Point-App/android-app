@@ -6,6 +6,7 @@ import com.easy.pointapp.model.RestClient;
 import com.easy.pointapp.model.api.v1.Post;
 
 import android.Manifest;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -134,6 +135,13 @@ public class PostsFragment extends Fragment
         int position = mRecyclerView.getChildAdapterPosition(view);
         Intent intent = new Intent(getContext(), PostActivity.class);
         intent.putExtra(PostActivity.EXTRA_POST, mAdapter.getItemAtPosition(position));
+        ActivityOptions activityOptions = null;
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//            activityOptions = ActivityOptions
+//                    .makeSceneTransitionAnimation(getActivity(), view, "post_transition");
+//            getActivity().startActivity(intent, activityOptions.toBundle());
+//        } else {
         getActivity().startActivity(intent);
+//        }
     }
 }

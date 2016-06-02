@@ -6,7 +6,10 @@ import com.easy.pointapp.model.api.v1.Comment;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -23,28 +26,24 @@ import java.util.TimeZone;
  */
 public class CommentViewHolder extends RecyclerView.ViewHolder {
 
-    public CardView cv;
+    private CardView mCardView;
 
-    public TextView createdAtTV;
+    private TextView mCreatedAndLikesText;
 
-    public TextView distanceTV;
+    private TextView mCommentText;
 
-    public TextView postTV;
+    private TextView mIcon;
 
-    public TextView likesTV;
-
-    public TextView iconTV;
-
-    public Typeface typeface;
+    private Typeface mTypeface;
 
     public CommentViewHolder(View itemView) {
         super(itemView);
-        cv = (CardView) itemView.findViewById(R.id.cv);
-        createdAtTV = (TextView) itemView.findViewById(R.id.createdAtTV);
-        distanceTV = (TextView) itemView.findViewById(R.id.distanceTV);
-        postTV = (TextView) itemView.findViewById(R.id.postTV);
-        likesTV = (TextView) itemView.findViewById(R.id.likesTV);
-        iconTV = (TextView) itemView.findViewById(R.id.iconTV);
+        mTypeface = Typeface.createFromAsset(itemView.getContext().getAssets(),
+                "fonts/webhostinghub-glyphs.ttf");
+        mCardView = (CardView) itemView.findViewById(R.id.cv);
+        mCreatedAndLikesText = (TextView) itemView.findViewById(R.id.commentDistanceAndLikes);
+        mCommentText = (TextView) itemView.findViewById(R.id.commentText);
+        mIcon = (TextView) itemView.findViewById(R.id.commentIcon);
     }
 
     public void setComment(Comment comment) {
@@ -52,33 +51,42 @@ public class CommentViewHolder extends RecyclerView.ViewHolder {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
+        String distanceAndLikes = "";
         try {
             Date d = sdf.parse(comment.getCreatedDate());
-            createdAtTV.setText(p.format(d));
+            distanceAndLikes = p.format(d) + " – ";
         } catch (Exception e) {
             e.printStackTrace();
-            createdAtTV.setText(p.format(new Date()));
         }
 
-        distanceTV.setText("");
-        likesTV.setText("Likes: " + (comment.getLikeNumber() == 0 ? "0"
-                : Integer.toString(comment.getLikeNumber())));
-        postTV.setText(comment.getText());
+        distanceAndLikes = distanceAndLikes + "Likes: " + (comment.getLikeNumber() == 0 ? "0"
+                : Integer.toString(comment.getLikeNumber()));
+
+        mCreatedAndLikesText.setText(distanceAndLikes);
+        mCommentText.setText(comment.getText());
+
+        ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
+        shapeDrawable.getPaint().setStyle(Paint.Style.FILL);
+        shapeDrawable.getPaint().setAntiAlias(true);
         if (TextUtils.isEmpty(comment.getIconColor()) || !comment.getIconColor()
                 .matches("#[A-Fa-f0-9]{6}")) {
-            iconTV.setBackgroundColor(Color.BLACK);
+            shapeDrawable.getPaint().setColor(Color.BLACK);
         } else {
-            iconTV.setBackgroundColor(Color.parseColor(comment.getIconColor()));
+            shapeDrawable.getPaint().setColor(Color.parseColor(comment.getIconColor()));
         }
+        mIcon.setBackground(shapeDrawable);
+
+
+
         try {
             int unicodeStr = Integer.parseInt(comment.getIcon(), 16);
             Log.d("", "u" + unicodeStr);
-            if (typeface != null) {
-                iconTV.setTypeface(typeface);
+            if (mTypeface != null) {
+                mIcon.setTypeface(mTypeface);
             }
-            iconTV.setText(Character.toString((char) unicodeStr));
+            mIcon.setText(Character.toString((char) unicodeStr));
         } catch (Exception e) {
-            iconTV.setText(comment.getIcon());
+            mIcon.setText(comment.getIcon());
             e.printStackTrace();
         }
 

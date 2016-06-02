@@ -5,7 +5,8 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="PointApp" parent="PointApp.Base"/>
+    <style name="PointApp" parent="PointApp.Base">
+    </style>
 
     <style name="PointApp.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowNoTitle">true</item>
@@ -13,6 +14,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="PointApp.PostTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/pcv_post_font_size_phone</item>
+        <item name="android:textColor">@color/white_text</item>
     </style>
 
 </resources>

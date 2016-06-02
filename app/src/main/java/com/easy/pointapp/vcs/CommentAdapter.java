@@ -66,8 +66,6 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             View v = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.comment_card_view, viewGroup, false);
             CommentViewHolder pvh = new CommentViewHolder(v);
-
-            pvh.typeface = typeface;
             return pvh;
         } else {
             View v = LayoutInflater.from(viewGroup.getContext())

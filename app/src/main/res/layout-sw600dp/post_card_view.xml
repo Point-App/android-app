@@ -25,7 +25,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/distanceTV"
+                    android:id="@+id/commentDistanceAndLikes"
                     android:gravity="center_vertical"
                     android:textSize="@dimen/pcv_distance_font_size"
                     android:textColor= "@color/white_text"
@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/postTV"
+                android:id="@+id/commentText"
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:textSize="@dimen/pcv_post_font_size"

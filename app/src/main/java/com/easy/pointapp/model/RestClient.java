@@ -8,6 +8,7 @@ import com.easy.pointapp.model.system.DeviceInformationManager;
 
 import android.content.Context;
 import android.location.Location;
+import android.text.TextUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,8 @@ import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Func1;
 
 /**
  * Created by Igor on 30.06.2015.
@@ -159,16 +162,25 @@ public class RestClient {
         return RETROFIT_SERVICE.create(PointRestService.class);
     }
 
-    public static Observable<Void> likePost(Context context, String postID) {
-        return RestClient.getService().sendLike(
-                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
-                        .addValue("type", "post").addValue("target", postID).build());
+    public static Observable<Void> likePost(final Context context, final String postID) {
+        return getToken(context).flatMap(new Func1<String, Observable<Void>>() {
+            @Override
+            public Observable<Void> call(String s) {
+                return RestClient.getService().sendLike(
+                        new Request.Builder().setUserID(s).addValue("type", "post")
+                                .addValue("target", postID).build());
+            }
+        });
     }
 
-    public static Observable<Post> loadPost(Context context, String postID) {
-        return RestClient.getNewService().loadPost(
-                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
-                        .addValue("post", postID).build());
+    public static Observable<Post> loadPost(final Context context, final String postID) {
+        return getToken(context).flatMap(new Func1<String, Observable<Post>>() {
+            @Override
+            public Observable<Post> call(String s) {
+                return RestClient.getNewService().loadPost(
+                        new Request.Builder().setUserID(s).addValue("post", postID).build());
+            }
+        });
     }
 
     public static Observable<List<Post>> loadFavouritePosts(Context context) {
@@ -176,10 +188,14 @@ public class RestClient {
                 new Request.Builder().setUserID(AuthManager.getAuthToken(context)).build());
     }
 
-    public static Observable<List<Post>> loadPosts(Context context, Location location) {
-        return RestClient.getNewService().loadPosts(
-                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
-                        .setLocation(location).build());
+    public static Observable<List<Post>> loadPosts(final Context context, final Location location) {
+        return getToken(context).flatMap(new Func1<String, Observable<List<Post>>>() {
+            @Override
+            public Observable<List<Post>> call(String s) {
+                return RestClient.getNewService().loadPosts(
+                        new Request.Builder().setUserID(s).setLocation(location).build());
+            }
+        });
     }
 
     public static Observable<Void> sendPost(Context context, Location location, String body) {
@@ -206,9 +222,33 @@ public class RestClient {
                         .addValue("post", postID).addValue("text", comment).build());
     }
 
-    public static Observable<Authentication> authenticate(Context context, Location location) {
-        return RestClient.getService().register(
-                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
-                        .setLocation(location).build());
+    public static Observable<Authentication> authenticate() {
+        return RestClient.getService().register(new Request.Builder().build());
+//                        .setUserID(AuthManager.getAuthToken(context))
+//                        .setLocation(location).build());
+    }
+
+    private static Observable<String> getToken(final Context context) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                subscriber.onNext(AuthManager.getAuthToken(context));
+                subscriber.onCompleted();
+            }
+        }).flatMap(new Func1<String, Observable<String>>() {
+            @Override
+            public Observable<String> call(final String s) {
+                if (TextUtils.isEmpty(s)) {
+                    return authenticate().map(new Func1<Authentication, String>() {
+                        @Override
+                        public String call(Authentication authentication) {
+                            return authentication.getToken();
+                        }
+                    });
+                } else {
+                    return Observable.just(s);
+                }
+            }
+        });
     }
 }

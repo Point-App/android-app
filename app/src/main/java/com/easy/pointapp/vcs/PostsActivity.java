@@ -3,8 +3,6 @@ package com.easy.pointapp.vcs;
 import com.crashlytics.android.Crashlytics;
 import com.easy.pointapp.R;
 import com.easy.pointapp.model.AuthManager;
-import com.easy.pointapp.model.RestClient;
-import com.easy.pointapp.model.api.v1.Authentication;
 import com.easy.pointapp.views.Container;
 import com.easy.pointapp.views.ContainerClient;
 import com.easy.pointapp.views.SingleScreenContainer;
@@ -25,13 +23,9 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
 import io.fabric.sdk.android.Fabric;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class PostsActivity extends AbstractLocationActivity implements ContainerClient, IAsyncVC {
 
@@ -210,25 +204,25 @@ public class PostsActivity extends AbstractLocationActivity implements Container
 
     public void makeAuth() {
         backgroundWorkStarted();
-        RestClient.authenticate(this, getCurrentLocation()).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Authentication>() {
-            @Override
-            public void call(Authentication authentication) {
-                backgroundWorkFinished();
-                AuthManager.setAuthToken(PostsActivity.this, authentication.getToken());
-                authFinished(true);
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                backgroundWorkFinished();
-                authFinished(false);
-                throwable.printStackTrace();
-                finish();
-                Toast.makeText(PostsActivity.this, "No internet connection", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
+//        RestClient.authenticate(this, getCurrentLocation()).subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Authentication>() {
+//            @Override
+//            public void call(Authentication authentication) {
+//                backgroundWorkFinished();
+//                AuthManager.setAuthToken(PostsActivity.this, authentication.getToken());
+//                authFinished(true);
+//            }
+//        }, new Action1<Throwable>() {
+//            @Override
+//            public void call(Throwable throwable) {
+//                backgroundWorkFinished();
+//                authFinished(false);
+//                throwable.printStackTrace();
+//                finish();
+//                Toast.makeText(PostsActivity.this, "No internet connection", Toast.LENGTH_SHORT)
+//                        .show();
+//            }
+//        });
     }
 
     public Location getCurrentLocation() {

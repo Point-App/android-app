@@ -133,6 +133,7 @@ public class PostsFragment extends Fragment
     public void onClick(View view) {
         int position = mRecyclerView.getChildAdapterPosition(view);
         Intent intent = new Intent(getContext(), PostActivity.class);
+        intent.putExtra(PostActivity.EXTRA_POST, mAdapter.getItemAtPosition(position));
         getActivity().startActivity(intent);
     }
 }

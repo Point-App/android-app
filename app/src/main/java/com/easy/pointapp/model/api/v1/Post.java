@@ -3,11 +3,13 @@ package com.easy.pointapp.model.api.v1;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * Created by Igor on 28.06.2015.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Post {
+public class Post implements Serializable {
 
     @JsonProperty("text")
     private String mText;

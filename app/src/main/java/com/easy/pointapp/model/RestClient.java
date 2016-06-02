@@ -264,6 +264,7 @@ public class RestClient {
                     return authenticate().map(new Func1<Authentication, String>() {
                         @Override
                         public String call(Authentication authentication) {
+                            AuthManager.setAuthToken(context, authentication.getToken());
                             return authentication.getToken();
                         }
                     });

@@ -198,28 +198,50 @@ public class RestClient {
         });
     }
 
-    public static Observable<Void> sendPost(Context context, Location location, String body) {
-        return RestClient.getService().sendPost(
-                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
-                        .setLocation(location).addValue("text", body).build());
+    public static Observable<Void> sendPost(final Context context, final Location location,
+            final String body) {
+        return getToken(context).flatMap(new Func1<String, Observable<Void>>() {
+            @Override
+            public Observable<Void> call(String s) {
+                return RestClient.getService().sendPost(
+                        new Request.Builder().setUserID(s).setLocation(location)
+                                .addValue("text", body).build());
+            }
+        });
     }
 
-    public static Observable<Void> likeComment(Context context, String commentID) {
-        return RestClient.getService().sendLike(
-                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
-                        .addValue("type", "comment").addValue("target", commentID).build());
+    public static Observable<Void> likeComment(final Context context, final String commentID) {
+        return getToken(context).flatMap(new Func1<String, Observable<Void>>() {
+            @Override
+            public Observable<Void> call(String s) {
+                return RestClient.getService().sendLike(
+                        new Request.Builder().setUserID(s).addValue("type", "comment")
+                                .addValue("target", commentID).build());
+            }
+        });
     }
 
-    public static Observable<List<Comment>> loadComments(Context context, String postID) {
-        return RestClient.getNewService().loadComments(
-                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
-                        .addValue("post", postID).build());
+    public static Observable<List<Comment>> loadComments(final Context context,
+            final String postID) {
+        return getToken(context).flatMap(new Func1<String, Observable<List<Comment>>>() {
+            @Override
+            public Observable<List<Comment>> call(String s) {
+                return RestClient.getNewService().loadComments(
+                        new Request.Builder().setUserID(s).addValue("post", postID).build());
+            }
+        });
     }
 
-    public static Observable<Void> sendComment(Context context, String postID, String comment) {
-        return RestClient.getService().sendComment(
-                new Request.Builder().setUserID(AuthManager.getAuthToken(context))
-                        .addValue("post", postID).addValue("text", comment).build());
+    public static Observable<Void> sendComment(final Context context, final String postID,
+            final String comment) {
+        return getToken(context).flatMap(new Func1<String, Observable<Void>>() {
+            @Override
+            public Observable<Void> call(String s) {
+                return RestClient.getService().sendComment(
+                        new Request.Builder().setUserID(s).addValue("post", postID)
+                                .addValue("text", comment).build());
+            }
+        });
     }
 
     public static Observable<Authentication> authenticate() {
